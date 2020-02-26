@@ -95,14 +95,14 @@ class GeneticAlgorithm():
         min_apt = min(self.fitness)
 
         if(min_apt < 0):
-            ajuste = min_apt*(-1)
+            adjustment = min_apt*(-1)
         else:
-            ajuste = min_apt
+            adjustment = min_apt
 
-        scale_roulette.append(ajuste)
+        scale_roulette.append(adjustment)
 
         for i in range(1, len(self.fitness)):
-            scale_roulette.append(scale_roulette[i-1] + (self.fitness[i]+ajuste))
+            scale_roulette.append(scale_roulette[i-1] + (self.fitness[i]+adjustment))
 
         for i in range(len(self.fitness)):
             j=0
@@ -149,7 +149,7 @@ if __name__ == '__main__':
     plt.plot(7.97,7.97,'ro', label='Global Max')
     plt.annotate("Global Max", (7.97,7.97),textcoords="offset points", xytext=(0,10), ha='center')
 
-    ga = GeneticAlgorithm(tmax = 200, popsize=100, cross_rate=0.3, mut_rate=0.1)
+    ga = GeneticAlgorithm(tmax = 200, popsize=200, cross_rate=0.3, mut_rate=0.05)
     while (ga.run):
         ga.step()
         x, y = [], []
