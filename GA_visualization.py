@@ -5,7 +5,7 @@ import random as rd
 import math
 
 class GeneticAlgorithm():
-    def __init__(self, tmax = 200, popsize=100, cross_rate=0.3, mut_rate=0.02):
+    def __init__(self, fitfunc, tmax = 200, popsize=100, cross_rate=0.3, mut_rate=0.02):
         self.tmax = tmax
         self.popsize = popsize
         self.cross_rate = cross_rate
@@ -17,6 +17,7 @@ class GeneticAlgorithm():
         self.gmax = []
         self.gmed = []
         self.t = 0
+        self.fitfunc = fitfunc
 
         for i in range(len(self.pop)):
             self.pop[i][0] = rd.uniform(0,10)
@@ -40,9 +41,8 @@ class GeneticAlgorithm():
         return self.pop
 
     def evaluate(self):
-        # Evaluation function
-        for i in range(len(self.pop)):
-            self.fitness[i] = math.sqrt(self.pop[i][0])*math.sin(self.pop[i][0]) * math.sqrt(self.pop[i][1])*math.sin(self.pop[i][1])
+        # Evaluate all population according to fitness function passed as parameter
+        self.fitness = list(map(self.fitfunc, self.pop))
 
     def crossover(self):
         # Crossover function
@@ -135,6 +135,9 @@ class GeneticAlgorithm():
         plt.title("Maximum, Average, Minimum Fitness per Generation")
         plt.show()
 
+def alpine2(i):
+    return ( math.sqrt(i[0])*math.sin(i[0]) * math.sqrt(i[1])*math.sin(i[1]) )
+
 
 if __name__ == '__main__':
     plt.ion()
@@ -145,14 +148,22 @@ if __name__ == '__main__':
     plt.xlim(0,10)
     plt.ylim(0,10)
     plt.draw()
-
     plt.plot(7.97,7.97,'ro', label='Global Max')
     plt.annotate("Global Max", (7.97,7.97),textcoords="offset points", xytext=(0,10), ha='center')
 
-    ga = GeneticAlgorithm(tmax = 200, popsize=200, cross_rate=0.3, mut_rate=0.05)
+
+    # GA initialization
+    # fitness function: alpine2
+    # number of generations: tmax
+    # population size: popsize
+    # crossover rate: cross_rate
+    # mutation rate: mut_rate
+    ga = GeneticAlgorithm(alpine2, tmax = 200, popsize=200, cross_rate=0.3, mut_rate=0.05)
     while (ga.run):
         ga.step()
         x, y = [], []
+
+        # Drawing the graphs dynamically
         textvar = plt.text(1, 9, "Step: " + str(ga.t), bbox=dict(facecolor='red', alpha=0.5))
         for item in ga.getpop():
             x.append(item[0])
@@ -163,7 +174,7 @@ if __name__ == '__main__':
         plt.pause(0.2)
         textvar.set_visible(False)
 
-
+    # Finally draws the last report and turns off the iterative mode
     if not ga.run:
         plt.ioff()
         ga.report()
