@@ -99,7 +99,7 @@ class GeneticAlgorithm():
         else:
             adjustment = min_apt
 
-        scale_roulette.append(adjustment)
+        scale_roulette.append(self.fitness[0]+adjustment)
 
         for i in range(1, len(self.fitness)):
             scale_roulette.append(scale_roulette[i-1] + (self.fitness[i]+adjustment))
